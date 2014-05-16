@@ -1,0 +1,15 @@
+# view AndroidManifest.xml #generated:13
+-keep class com.android.pyquiz.PyQuiz { <init>(...); }
+
+# view AndroidManifest.xml #generated:23
+-keep class com.plugin.gcm.CordovaGCMBroadcastReceiver { <init>(...); }
+
+# view AndroidManifest.xml #generated:30
+-keep class com.plugin.gcm.GCMIntentService { <init>(...); }
+
+# view AndroidManifest.xml #generated:22
+-keep class com.plugin.gcm.PushHandlerActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:19
+-keep class it.mobimentum.phonegapspinnerplugin.ProgressActivity { <init>(...); }
+

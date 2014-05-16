@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+        <script type="text/javascript" src="cordova.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/jquery-1.11.1.min.js" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8" src="js/PushNotification.js"></script>
+
+
+             <script type="text/javascript" charset="utf-8">
+
+    // Wait for device API libraries to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function exitFromApp() {
+        navigator.app.exitApp();
+    }
+
+    function noConnectionNotify() {
+        navigator.notification.alert(
+            'Could not connect to server. Please check your internet connection.', // message
+            exitFromApp, // callback
+            'Game Over', // title
+            'Done' // buttonName
+        );
+
+    }
+
+    // device APIs are available
+        var pushNotification;
+ // handle GCM notifications for Android
+            function onNotificationGCM(e) {
+                $("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
+                
+                switch( e.event )
+                {
+                    case 'registered':
+                    if ( e.regid.length > 0 )
+                    {
+                        $("#app-status-ul").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
+                        // Your GCM push server needs to know the regID before it can push to this device
+                        // here is where you might want to send it the regID for later use.
+                        console.log("regID = " + e.regid);
+                        $.get("http://1ecf6ddc.ngrok.com/pyquiz/gcm-save/" + e.regid)
+                    }
+                    break;
+                    
+                    case 'message':
+                        // if this flag is set, this notification happened while we were in the foreground.
+                        // you might want to play a sound to get the user's attention, throw up a dialog, etc.
+                        if (e.foreground)
+                        {
+                            $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
+
+                            // if the notification contains a soundname, play it.
+                            var my_media = new Media("/android_asset/www/"+e.soundname);
+                            my_media.play();
+                        }
+                        else
+                        {   // otherwise we were launched because the user touched a notification in the notification tray.
+                            if (e.coldstart)
+                                $("#app-status-ul").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
+                            else
+                            $("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+                        }
+
+                        $("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
+                        //android only
+                        $("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
+                        //amazon-fireos only
+                        $("#app-status-ul").append('<li>MESSAGE -> TIMESTAMP: ' + e.payload.timeStamp + '</li>');
+                    break;
+                    
+                    case 'error':
+                        $("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
+                    break;
+                    
+                    default:
+                        $("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+                    break;
+                }
+            }
+            
+
+            function successHandler (result) {
+                $("#app-status-ul").append('<li>success:'+ result +'</li>');
+            }
+            
+            function errorHandler (error) {
+                $("#app-status-ul").append('<li>error:'+ error +'</li>');
+            }
+    function onDeviceReady() {
+        // Empty
+        var networkState = navigator.connection.type;
+                $("#app-status-ul").append('<li>deviceready event received</li>');
+                try 
+                { 
+                    pushNotification = window.plugins.pushNotification;
+                    $("#app-status-ul").append('<li>registering android</li>');
+                    pushNotification.register(successHandler, errorHandler, {"senderID":"725286918690","ecb":"onNotificationGCM"});
+                }
+                catch(err) 
+                { 
+                    txt="There was an error on this page.\n\n"; 
+                    txt+="Error description: " + err.message + "\n\n"; 
+                } 
+         
+        if (networkState == Connection.NONE) {
+            noConnectionNotify();
+        } else {
+            navigator.splashscreen.hide();
+
+            //window.location = "http://63f9a3cd.ngrok.com";
+            //spinnerplugin.show();
+/*            spinnerplugin.show({
+                timeout: 4
+            });*/
+        }
+    }
+    </script>
+       <title>pyquiz</title>
+    </head>
+    <body>
+        <div class="ap1p">
+            <h1>PyQuicdssdsccz</h1>
+    <p><a href="#" onclick="showAlert(); return false;">Show Alert</a></p>
+
+        </div>
+        <div id="home">
+            <div id="app-status-div">
+                <ul id="app-status-ul">
+                    <li>Cordova PushNotification Plugin Demo</li>
+                </ul>
+            </div>
+        </div>
+        <script type="text/javascript">
+         //   app.initialize();
+
+
+
+        </script>
+    </body>
+</html>

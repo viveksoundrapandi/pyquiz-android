@@ -1,0 +1,22 @@
+{
+    "prepare_queue": {
+        "installed": [
+            {
+                "plugin": "com.phonegap.plugins.PushPlugin",
+                "vars": {},
+                "topLevel": true
+            },
+            {
+                "plugin": "com.phonegap.plugins.PushPlugin",
+                "vars": {},
+                "topLevel": true
+            }
+        ],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {},
+    "dependent_plugins": {}
+}
